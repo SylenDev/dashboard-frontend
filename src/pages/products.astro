@@ -1,0 +1,81 @@
+---
+import DefaultLayout from "../layouts/DefaultLayout.astro";
+import EmpyState from "../components/EmpyState.astro";
+import { Modal } from "accessible-astro-components";
+import axios from "axios";
+import '../styles/taildwind.css'
+import MyComponent from '../Vue/MyComponent.vue'
+
+var data = [];
+
+async function readProducts() {
+  await axios
+    .get("http://localhost:3001/api/v2/pokemon")
+    .then((response) => {
+      data = response.data;
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+}
+//await readProducts();
+
+async function createPokemon(event) {
+  event.preventDefault();
+  const form = event.target;
+  const data = new FormData(form);
+  const name = data.get("name");
+  //const stock = data.get("stock");
+  await axios
+    .post("http://localhost:3001/api/v2/pokemon", {
+      name: name,
+      //stock: stock,
+    })
+    .then((response) => {
+      console.log(response);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+
+  await readProducts();
+}
+---
+
+<DefaultLayout title="Products">
+  <section>
+    <h1>Products</h1><br />
+    <p >Dashboard para el control de productos</p>
+  </section>
+  <section class="margin-32">
+    <div class="space-content">
+      <h2>Product overview</h2>
+      <EmpyState>
+        You haven't added any products yet. Start by adding some.
+      </EmpyState>
+      <MyComponent></MyComponent>
+      <button id="modal-trigger" class="button color-secondary"
+        >Add your first product</button
+      >
+      <Modal triggerId="modal-trigger" title="Add product" closeText="Cancel">
+        <form action="createPokemon">
+          <label for="name">Name:</label>
+          <input type="text" id="name" name="name" required />
+          <!-- 
+            <label for="stock">Stock:</label>
+            <input type="number" id="stock" name="stock" required />
+          -->
+          <input
+            type="submit"
+            value="Add product"
+            class="button color-secondary"
+          />
+        </form>
+        <p>
+          You can use this component to include a form that adds a new product
+          to the list.
+        </p>
+      </Modal>
+    </div>
+  </section>
+</DefaultLayout>

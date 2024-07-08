@@ -16,6 +16,7 @@
     "accessible-astro-components": "^1.5.7",
     "astro-icon": "^0.7.3",
     "axios": "^1.7.2",
+    "pinia": "^2.1.7",
     "vite": "^5.3.3",
     "vue": "^3.4.31"
   },
